@@ -8,7 +8,7 @@ import com.luv2code.ecommerce.entity.ProductCategory;
 
 @CrossOrigin("http://localhost:4200")
 
-@RepositoryRestResource(collectionResourceRel = "productCategory", path = "product=category" )
+@RepositoryRestResource(collectionResourceRel = "productCategory", path = "product-category" )
 public interface ProductCatagoryRepository extends JpaRepository<ProductCategory,Long> {
 
     
