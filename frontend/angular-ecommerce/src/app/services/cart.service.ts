@@ -19,7 +19,7 @@ export class CartService {
   addToCart(theCartItem :CartItem){
     //check if we already have the item in our cart
     let alreadyExistsInCart:boolean=false;
-    let existingCartItem1: CartItem|undefined=new CartItem(new Product());
+    let existingCartItem1: CartItem|undefined=new CartItem(new Product(0,"","","",0,"",false,0));
     let  existingCartItem2 :CartItem|undefined;
     if(this.cartItems.length>0){
 
@@ -70,7 +70,7 @@ export class CartService {
     console.log('Contents of the cart');
     for(let tempCartItem of this.cartItems){
       const subtottalPrice=tempCartItem.quantity*tempCartItem.unitPrice;
-      console.log(`name:${tempCartItem.name},quantity=${tempCartItem.quantity},unitPrice=${tempCartItem.unitPrice},xubTotalPrice:${subtottalPrice}`);
+      console.log(`name:${tempCartItem.name},quantity=${tempCartItem.quantity},unitPrice=${tempCartItem.unitPrice},subTotalPrice:${subtottalPrice}`);
     }
     console.log(`totalPrice: ${totalPriceValue.toFixed(2)}, totalQuantity:${totalQuanttityValue}`);
     console.log('---');
