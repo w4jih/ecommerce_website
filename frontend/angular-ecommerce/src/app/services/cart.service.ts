@@ -7,11 +7,12 @@ import { Product } from '../common/product';
   providedIn: 'root'
 })
 export class CartService {
+  
 
   cartItems : CartItem[]=[];
 
   totalPrice: Subject<number> =new Subject<number>();
-  totalQantity: Subject<number> =new Subject<number>();
+  totalQuantity: Subject<number> =new Subject<number>();
 
 
   constructor() { }
@@ -61,7 +62,7 @@ export class CartService {
 
     //publish the new values ... all subscribers will receive the new data
     this.totalPrice.next(totalPriceValue);
-    this.totalQantity.next(totalQuanttityValue);
+    this.totalQuantity.next(totalQuanttityValue);
 
     //log cart data just for debugging purposes
     this.logCartData(totalPriceValue,totalQuanttityValue);
@@ -75,4 +76,25 @@ export class CartService {
     console.log(`totalPrice: ${totalPriceValue.toFixed(2)}, totalQuantity:${totalQuanttityValue}`);
     console.log('---');
   }
+  decrementQuantity(theCartItem: CartItem) {
+    theCartItem.quantity--;
+    if(theCartItem.quantity==0){
+      this.remove(theCartItem);
+    }
+    else{
+      this.computeCartTotals();
+    }
+  }
+  remove(theCartItem: CartItem) {
+    //get index of item in the array
+    const itemIndex =this.cartItems.findIndex( tempCartItem => tempCartItem.id===theCartItem.id);
+
+    //if found, remove the item the array at the given index
+    if (itemIndex >-1){
+      this.cartItems.splice(itemIndex , 1);
+
+      this.computeCartTotals();
+    }
+  }
+
 }
