@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- shipping Address -->
-                <div formGroupName="shippingAddress" class="form-area">
+                <div formGroupName="shippingAdress" class="form-area">
                     <h3>Shipping Address</h3>
 
                     <div class="row">
@@ -102,7 +102,7 @@
 
 
                 <!-- Billing Address -->
-                <div formGroupName="billingAddress" class="form-area">
+                <div formGroupName="billingAdress" class="form-area">
                     <h3>Billing Address</h3>
 
                     <div class="row">
@@ -204,7 +204,9 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="expirationMonth">
-                                    <option>TO DO</option>
+                                    <option *ngFor="let month of creditCardMonths">
+                                        {{month}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -214,8 +216,9 @@
                         <div class="col-md-2"> <label>Expiration Year</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="expirationYear">
-                                    <option>TO DO</option>
+                                <select formControlName="expirationYear" (click)="handleMonthsAndYears()">
+                                    <option *ngFor="let year of creditCardYears">
+                                        {{year}}</option>
                                 </select>
                             </div>
                         </div>
