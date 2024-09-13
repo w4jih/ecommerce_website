@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Luv2ShopFormService } from '../../services/luv2-shop-form.service';
+import { Country } from '../../common/country';
+import { State } from '../../common/state';
+
+
 
 @Component({
   selector: 'app-checkout',
@@ -8,6 +12,7 @@ import { Luv2ShopFormService } from '../../services/luv2-shop-form.service';
   styleUrl: './checkout.component.css'
 })
 export class CheckoutComponent implements OnInit{
+
 
 
    checkoutFormGroup!: FormGroup; 
@@ -19,6 +24,12 @@ export class CheckoutComponent implements OnInit{
 
 creditCardYears : number[]=[];
 creditCardMonths : number[]=[];
+
+countries :Country[]=[];
+
+shippingAddressStates: State[]=[];
+billingAddessStates: State[]=[];
+
   constructor(private formBuilder: FormBuilder,
               private luv2ShopFormService : Luv2ShopFormService
               
@@ -32,14 +43,14 @@ creditCardMonths : number[]=[];
         lastName:[''],
         email:['']
       }),
-      shippingAdress: this.formBuilder.group({
+      shippingAddress: this.formBuilder.group({
         street:[''],
         city:[''],
         state:[''],
         country:[''],
         zipCode:['']
         }),
-        billingAdress: this.formBuilder.group({
+        billingAddress: this.formBuilder.group({
           street:[''],
           city:[''],
           state:[''],
@@ -68,6 +79,8 @@ creditCardMonths : number[]=[];
       }
     );
 
+
+
     //populate credit card years
 
     this.luv2ShopFormService.getCreditCardYears().subscribe(
@@ -75,20 +88,42 @@ creditCardMonths : number[]=[];
         console.log("Retrieved credit card years: "+JSON.stringify(data));
         this.creditCardYears=data;
       }
-    )
+    );
+
+    //populate the countries
+    this.luv2ShopFormService.getCountries().subscribe(
+      data => {
+        console.log("Retrieved countries: " + JSON.stringify(data));
+        this.countries = data;
+      }
+    );
+
+    
   }
   copyShippingAddressToBilllingAddress(event:any){
     if(event.target.checked){
-      this.checkoutFormGroup.controls['billingAdress']
-          .setValue(this.checkoutFormGroup.controls['shippingAdress'].value);
+      this.checkoutFormGroup.controls['billingAddress']
+          .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
+
+          //bug fix for states
+          this.billingAddessStates = this.shippingAddressStates;
     }
     else{
-      this.checkoutFormGroup.controls['billingAdress'].reset();
+      this.checkoutFormGroup.controls['billingAddress'].reset();
+
+      //bug fix for states
+      this.billingAddessStates=[];
     }
   }
   onSubmit(){
     console.log("Handling the submit button");
     console.log(this.checkoutFormGroup.get('customer')?.value)
+    console.log("the email address is "+this.checkoutFormGroup.get('customer')?.value.email);
+
+    console.log("the email address is "+this.checkoutFormGroup.get('customer')?.value.country.name);
+    console.log("the email address is "+this.checkoutFormGroup.get('customer')?.value.state.name);
+
+
   }
   handleMonthsAndYears() {
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
@@ -114,4 +149,40 @@ creditCardMonths : number[]=[];
       }
     )
   }
-}
+  getStates(formGroupName: string) {
+   
+    const formGroup = this.checkoutFormGroup.get(formGroupName);
+
+    const countryCode = formGroup?.value.country.code;
+    const countryName = formGroup?.value.country.name;
+
+    console.log(`${formGroupName} country code: ${countryCode}`);
+    console.log(`${formGroupName} country name: ${countryName}`);
+
+    this.luv2ShopFormService.getStates(countryCode).subscribe(
+      data => {
+
+        if (formGroupName==='shippingAddress'){
+          this.shippingAddressStates=data
+          
+        }
+        else{
+          this.billingAddessStates=data;
+        }
+
+        // select first item by default
+        formGroup?.get('state')?.setValue(data[0]);
+        console.log('shippingstates');
+        console.table(data); 
+      }
+      
+    )
+
+      }
+
+      
+     }
+    
+
+    
+
