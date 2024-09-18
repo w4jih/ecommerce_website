@@ -20,7 +20,7 @@ export class CartService {
   addToCart(theCartItem :CartItem){
     //check if we already have the item in our cart
     let alreadyExistsInCart:boolean=false;
-    let existingCartItem1: CartItem|undefined=new CartItem(new Product(0,"","","",0,"",false,0));
+    let existingCartItem1: CartItem|undefined=new CartItem(new Product("","","","",0,"",false,0));
     let  existingCartItem2 :CartItem|undefined;
     if(this.cartItems.length>0){
 
